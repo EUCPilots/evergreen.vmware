@@ -66,31 +66,6 @@ function Get-VMwareRelatedDLGList {
     Write-Output -InputObject $WebResult.dlgEditionsLists.dlgList
 }
 
-function Get-VMwareDLGHeaderQuery {
-    [OutputType("System.String")]
-    param (
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String] $DownloadGroup,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String] $ProductId,
-
-        [Parameter(Mandatory = $false)]
-        [System.String] $Locale = 'en_US'
-    )
-
-    $APIResource = 'getDLGHeader'
-    $queryParameters = @{
-        locale        = $Locale
-        downloadGroup = $DownloadGroup
-        productId     = $ProductId
-    }
-    $queryString = ($queryParameters.GetEnumerator() | ForEach-Object { "&$($_.Key)=$($_.Value)" }) -join ''
-    return "$(Get-VMwareAPIPath)/$($APIResource)?$($queryString.TrimStart('&'))"
-}
-
 function Get-VMwareDLGDetailsQuery {
     [OutputType("System.String")]
     param (
@@ -264,6 +239,33 @@ function Test-VMwareProductDownload {
         }
     }
 }
+
+<#
+function Get-VMwareDLGHeaderQuery {
+    [OutputType("System.String")]
+    param (
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String] $DownloadGroup,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String] $ProductId,
+
+        [Parameter(Mandatory = $false)]
+        [System.String] $Locale = 'en_US'
+    )
+
+    $APIResource = 'getDLGHeader'
+    $queryParameters = @{
+        locale        = $Locale
+        downloadGroup = $DownloadGroup
+        productId     = $ProductId
+    }
+    $queryString = ($queryParameters.GetEnumerator() | ForEach-Object { "&$($_.Key)=$($_.Value)" }) -join ''
+    return "$(Get-VMwareAPIPath)/$($APIResource)?$($queryString.TrimStart('&'))"
+}
+#>
 
 # Export the public modules and aliases
 Export-ModuleMember -Function "Get-VMwareProductList", "Get-VMwareProductDownload", "Test-VMwareProductDownload" -Alias *
