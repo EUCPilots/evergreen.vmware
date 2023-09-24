@@ -48,7 +48,7 @@ To install from the repository
 4. Run `Set-ExecutionPolicy` using the parameter -`ExecutionPolicy` set to `RemoteSigned` or `Bypass`
 5. Unblock the files with `Get-ChildItem -Path <path to module> -Recurse | Unblock-File`
 
-Once installation is complete, you can validate that the module exists by running `Get-Module -ListAvailable Evergreen`. To use the module, load it with:
+Once installation is complete, you can validate that the module exists by running `Get-Module -ListAvailable Evergreen.VMware`. To use the module, load it with:
 
 ```powershell
 Import-Module -Name ./src/Evergreen.VMware.psd1
