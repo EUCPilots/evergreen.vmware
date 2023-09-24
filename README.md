@@ -43,9 +43,9 @@ Common PowerShell module paths include:
 To install from the repository
 
 1. Download the `main branch` to your workstation
-2. Copy the contents of the Evergreen folder onto your workstation into the desired PowerShell Module path
-3. Open a Powershell console with the Run as Administrator option
-4. Run `Set-ExecutionPolicy` using the parameter `RemoteSigned` or `Bypass`
+2. Copy the contents of the `src` folder onto your workstation into the desired PowerShell Module path
+3. Open a Powershell console
+4. Run `Set-ExecutionPolicy` using the parameter -`ExecutionPolicy` set to `RemoteSigned` or `Bypass`
 5. Unblock the files with `Get-ChildItem -Path <path to module> -Recurse | Unblock-File`
 
 Once installation is complete, you can validate that the module exists by running `Get-Module -ListAvailable Evergreen`. To use the module, load it with:
