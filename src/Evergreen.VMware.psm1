@@ -266,4 +266,4 @@ function Test-VMwareProductDownload {
 }
 
 # Export the public modules and aliases
-Export-ModuleMember -Function "Get-VMwareProductList", "Get-VMwareRelatedDLGList", "Get-VMwareProductDownload", "Test-VMwareProductDownload" -Alias *
+Export-ModuleMember -Function "Get-VMwareProductList", "Get-VMwareProductDownload", "Test-VMwareProductDownload" -Alias *
