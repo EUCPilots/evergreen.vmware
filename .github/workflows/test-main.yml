@@ -9,6 +9,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'src/**'
+      - 'tests/**'
 
 jobs:
   pestertest:
@@ -23,13 +24,11 @@ jobs:
         run: |
           .\tests\Install-Pester.ps1
           Import-Module -Name "Pester" -Force -ErrorAction "Stop"
-          Import-Module -Name "$env:GITHUB_WORKSPACE\src\Evergreen.VMware.psd1" -Force
+          Import-Module -Name "$env:GITHUB_WORKSPACE\src\Evergreen.VMware.psd1" -Force -ErrorAction "Stop"
 
           $Config = [PesterConfiguration]::Default
           $Config.Run.Path = "$env:GITHUB_WORKSPACE\tests"
           $Config.Run.PassThru = $true
-          $Config.CodeCoverage.Enabled = $true
-          $Config.CodeCoverage.Path = "$env:GITHUB_WORKSPACE\src"
           $Config.Output.Verbosity = "Detailed"
           $Config.TestResult.Enabled = $true
           $Config.TestResult.OutputFormat = "NUnitXml"
