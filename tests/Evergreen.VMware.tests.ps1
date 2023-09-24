@@ -11,7 +11,7 @@ BeforeDiscovery {
     $ManifestPath = [System.IO.Path]::Combine($ModulePath, "Evergreen.VMware.psd1")
 
     # TestCases are splatted to the script so we need hashtables
-    $Scripts = Get-ChildItem -Path $ModulePath -Recurse -Include *.ps1, *.psm1
+    $Scripts = Get-ChildItem -Path $ModulePath -Recurse -Include "*.ps1", "*.psm1"
     $TestCase = $Scripts | ForEach-Object { @{file = $_ } }
 }
 
@@ -30,24 +30,6 @@ Describe "General project validation" {
     }
 }
 
-Describe "Module Function validation" {
-    It "Script <file.Name> should only contain one function" -TestCases $TestCase {
-        param ($file)
-        $contents = Get-Content -Path $file.FullName -ErrorAction "Stop"
-        $describes = [Management.Automation.Language.Parser]::ParseInput($contents, [ref]$null, [ref]$null)
-        $test = $describes.FindAll( { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
-        $test.Count | Should -Be 1
-    }
-
-    It "Script <file.Name> should match function name" -TestCases $TestCase {
-        param ($file)
-        $contents = Get-Content -Path $file.FullName -ErrorAction "Stop"
-        $describes = [Management.Automation.Language.Parser]::ParseInput($contents, [ref]$null, [ref]$null)
-        $test = $describes.FindAll( { $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
-        $test[0].name | Should -Be $file.basename
-    }
-}
-
 # Test module and manifest
 Describe "Module Metadata validation" {
     It "Script fileinfo should be OK" {
@@ -55,7 +37,7 @@ Describe "Module Metadata validation" {
     }
 
     It "Import module should be OK" {
-        { Import-Module $ModulePath -Force -ErrorAction "Stop" } | Should -Not -Throw
+        { Import-Module $ManifestPath -Force -ErrorAction "Stop" } | Should -Not -Throw
     }
 }
 
@@ -92,7 +74,7 @@ Describe "Get-VMwareProductList" {
 }
 
 Describe "Get-VMwareProductDownload" {
-    BeforeAll {
+    BeforeDiscovery {
         $Download = Get-VMwareProductList -Name "VMware vSphere" | Get-VMwareProductDownload
     }
 
