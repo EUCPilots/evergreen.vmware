@@ -97,32 +97,36 @@ Describe "Get-VMwareProductDownload" {
     }
 
     Context "Test Get-VMwareProductDownload output" -ForEach $Download {
+        BeforeAll {
+            $Item = $_
+        }
+
         It "Should have a ProductName property" {
-            $_.ProductName | Should -Not -BeNullOrEmpty
+            $Item.ProductName | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a Download property" {
-            $_.Download | Should -Not -BeNullOrEmpty
+            $Item.Download | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a Category property" {
-            $_.Category | Should -Not -BeNullOrEmpty
+            $Item.Category | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a Md5 property" {
-            $_.Md5 | Should -Not -BeNullOrEmpty
+            $Item.Md5 | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a ReleaseDate property" {
-            $_.ReleaseDate | Should -Not -BeNullOrEmpty
+            $Item.ReleaseDate | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a Version property" {
-            $_.Version | Should -Not -BeNullOrEmpty
+            $Item.Version | Should -Not -BeNullOrEmpty
         }
 
         It "Should have a URI property" {
-            $_.URI | Should -Not -BeNullOrEmpty
+            $Item.URI | Should -Not -BeNullOrEmpty
         }
     }
 }
