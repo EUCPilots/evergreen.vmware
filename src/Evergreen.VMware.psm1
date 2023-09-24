@@ -49,21 +49,23 @@ function Get-VMwareRelatedDLGList {
         [System.String] $DLGType = 'PRODUCT_BINARY'
     )
 
-    $APIResource = 'getRelatedDLGList'
-    $queryParameters = @{
-        category = $CategoryMap
-        product  = $ProductMap
-        version  = $VersionMap
-        dlgType  = $DLGType
+    process {
+        $APIResource = 'getRelatedDLGList'
+        $queryParameters = @{
+            category = $CategoryMap
+            product  = $ProductMap
+            version  = $VersionMap
+            dlgType  = $DLGType
+        }
+        $queryString = ( $queryParameters.GetEnumerator() | ForEach-Object { "&$($_.Key)=$($_.Value)" }) -join ''
+        $params = @{
+            Uri             = "$(Get-VMwareAPIPath)/$($APIResource)?$($queryString.TrimStart('&'))"
+            UseBasicParsing = $true
+            ErrorAction     = "Stop"
+        }
+        $WebResult = Invoke-RestMethod @params
+        Write-Output -InputObject $WebResult.dlgEditionsLists.dlgList
     }
-    $queryString = ( $queryParameters.GetEnumerator() | ForEach-Object { "&$($_.Key)=$($_.Value)" }) -join ''
-    $params = @{
-        Uri             = "$(Get-VMwareAPIPath)/$($APIResource)?$($queryString.TrimStart('&'))"
-        UseBasicParsing = $true
-        ErrorAction     = "Stop"
-    }
-    $WebResult = Invoke-RestMethod @params
-    Write-Output -InputObject $WebResult.dlgEditionsLists.dlgList
 }
 
 function Get-VMwareDLGDetailsQuery {
