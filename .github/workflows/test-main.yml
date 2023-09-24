@@ -1,0 +1,68 @@
+name: 'Validate module'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/**'
+
+jobs:
+  pestertest:
+    name: "Run Pester tests on Windows PowerShell (main push)"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pester tests
+        shell: powershell
+        working-directory: "${{ github.workspace }}"
+        run: |
+          .\tests\Install-Pester.ps1
+          Import-Module -Name "Pester" -Force -ErrorAction "Stop"
+          Import-Module -Name "$env:GITHUB_WORKSPACE\src\Evergreen.VMware.psd1" -Force
+
+          $Config = [PesterConfiguration]::Default
+          $Config.Run.Path = "$env:GITHUB_WORKSPACE\tests"
+          $Config.Run.PassThru = $true
+          $Config.CodeCoverage.Enabled = $true
+          $Config.CodeCoverage.Path = "$env:GITHUB_WORKSPACE\src"
+          $Config.Output.Verbosity = "Detailed"
+          $Config.TestResult.Enabled = $true
+          $Config.TestResult.OutputFormat = "NUnitXml"
+          $Config.TestResult.OutputPath = "$env:GITHUB_WORKSPACE\tests\TestResults.xml"
+          Invoke-Pester -Configuration $Config
+
+      # Upload test results
+      - name: Upload Pester test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: "${{ github.workspace }}\\tests\\TestResults.xml"
+
+  publish-test-results:
+    name: "Publish Tests Results"
+    needs: [ "pestertest"]
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      checks: write
+
+      # only needed unless run with comment_mode: off
+      pull-requests: write
+
+    steps:
+      - name: Download Pester Test Result Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Publish Pester Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          nunit_files: "test-results/**/*.xml"
