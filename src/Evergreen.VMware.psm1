@@ -88,6 +88,9 @@ function Get-VMwareDLGDetailsQuery {
 }
 
 function Get-VMwareProductList {
+    <#
+        .EXTERNALHELP Evergreen.VMware-help.xml
+    #>
     [CmdletBinding(SupportsShouldProcess = $false)]
     param (
         [Parameter(Mandatory = $false)]
@@ -120,6 +123,9 @@ function Get-VMwareProductList {
 }
 
 function Get-VMwareProductDownload {
+    <#
+        .EXTERNALHELP Evergreen.VMware-help.xml
+    #>
     param (
         [Parameter(Mandatory = $true,
             Position = 0,
@@ -163,10 +169,10 @@ function Get-VMwareProductDownload {
 
 function Test-VMwareProductDownload {
     <#
-        .EXTERNALHELP Evergreen-help.xml
+        .EXTERNALHELP Evergreen.VMware-help.xml
     #>
     [OutputType([System.Management.Automation.PSObject])]
-    [CmdletBinding(SupportsShouldProcess = $true, HelpURI = "https://stealthpuppy.com/evergreen/test/", DefaultParameterSetName = "Path")]
+    [CmdletBinding(SupportsShouldProcess = $false)]
     param (
         [Parameter(
             Mandatory = $true,
@@ -184,10 +190,7 @@ function Test-VMwareProductDownload {
 
         [Parameter()]
         [ValidateNotNullOrEmpty()]
-        [System.String] $UserAgent = [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome,
-
-        [Parameter(Mandatory = $false)]
-        [System.Management.Automation.SwitchParameter] $Force
+        [System.String] $UserAgent = [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
     )
 
     process {
@@ -235,10 +238,8 @@ function Test-VMwareProductDownload {
     }
 
     end {
-        if ($PSCmdlet.ShouldProcess("Remove variables")) {
-            if (Test-Path -Path Variable:params) { Remove-Variable -Name "params" -ErrorAction "SilentlyContinue" }
-            Remove-Variable -Name "OutPath", "OutFile" -ErrorAction "SilentlyContinue"
-        }
+        if (Test-Path -Path Variable:params) { Remove-Variable -Name "params" -ErrorAction "SilentlyContinue" }
+        Remove-Variable -Name "OutPath", "OutFile" -ErrorAction "SilentlyContinue"
     }
 }
 
